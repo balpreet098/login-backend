@@ -2,15 +2,17 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
+
+
 // const Homepage = require('./Homepage.jsx');
 
 const coreOptions = {
-  origin: 'http://localhost:5173',
+ 
   credentials: true,
 };
 
 
-const app = express();
+const app = express();  
 app.use(cors(coreOptions));
 app.use(express.json());
 const mazehiimzaa = require("cookie-parser")
@@ -57,6 +59,10 @@ app.post('/Register', (req, res) => {
 })
 
 // mew-appli
+
+
+
+
 
 app.get('/tk', (req, res) => {
 
