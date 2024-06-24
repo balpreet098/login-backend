@@ -8,12 +8,23 @@ require("dotenv").config();
 // const Homepage = require('./Homepage.jsx');
 
 const coreOptions = {
-  origin: ["*", process.env.FRONT_END_BASE_URL],
+  origin: "*",
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
+  optionsSuccessStatus: 204,        
+  
 };
 
 const port = process.env.PORT || 4000;
 const app = express();
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-type,Accept');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
+});
 app.use(cors(coreOptions));
 app.use(express.json());
 
@@ -58,7 +69,7 @@ app.post("/Register", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-// mew-appli
+// new-appli
 
 app.get("/tk", (req, res) => {
   try {
@@ -85,6 +96,8 @@ app.get("/tk", (req, res) => {
   }
 });
 
+
+
 // Login- api.................................
 
 app.post("/login", (req, res) => {
@@ -109,6 +122,8 @@ app.post("/login", (req, res) => {
           secure: true,
           sameSite: "none",
           // expires:new Date(Date.now()+900000),
+
+
 
           maxAge: 12 * 12 * 50 * 50 * 1000,
         });
