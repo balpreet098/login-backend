@@ -11,8 +11,10 @@ const bcrypt = require("bcrypt");
 // const Homepage = require('./Homepage.jsx');
 
 
+const frontUrl = process.env.FRONT_END_BASE_URL;
+
 const coreOptions = {
-  origin: ["*", "http://localhost:5174"],
+  origin: ["*", frontUrl , 'http://localhost:3000/'],
   credentials: true,
 };
 
