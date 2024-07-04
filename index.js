@@ -199,7 +199,7 @@ app.post("/forgot-password", async (req, res) => {
     const { email } = req.body;
     let user = await usermodel.findOne({ email: email });
     if (!user) {
-      return res.json({ msg: "User Not Found!" });
+      return res.sendStatus(404).json({ msg: "User Not Found!" });
     }
 
     let getOtp = await generateOTP();
