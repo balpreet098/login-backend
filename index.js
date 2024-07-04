@@ -11,11 +11,12 @@ const bcrypt = require("bcrypt");
 // const Homepage = require('./Homepage.jsx');
 
 
-const frontUrl = process.env.FRONT_END_BASE_URL;
+const frontUrl = process.env.FRONT_END_BASE_URL || "https://login-frontend-alpha.vercel.app";
+console.log(frontUrl)
 
 const coreOptions = {
-  origin: ["*", frontUrl , 'http://localhost:3000/'],
-  credentials: true,
+  origin:'*',
+  credentials: false,
 };
 
 
@@ -35,7 +36,7 @@ app.use(function (req, res, next) {
 app.use(cors(coreOptions));
 app.use(express.json());
 
-app.use(mazehiimzaa());
+// app.use(mazehiimzaa());
 
 app.use(require("body-parser").urlencoded({ extended: true }));
 
@@ -191,43 +192,6 @@ app.post("/login", async (req, res) => {
 
 const PORT = process.env.PORT || 4000;
 
-/////////////////////
-// app.post("/login", async (req, res) => {
-//   console.log(req.body);
-
-//   const { email, password } = req.body;
-//   console.log(email, password);
-
-//   usermodel.findOne({ email }).then(async (user) => {
-//     console.log(user);
-
-//     if (user) {
-//       if (user.password === password) {
-//         const authToken = await jwt.sign(
-//           { userId: user._id, email: user.email },
-//           "secret_key"
-//         );
-
-//         // const refreshToken = jwt.sign({ userId: user.id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-//         res.cookie("authToken", authToken, {
-//           path: "/",
-//           httpOnly: true,
-//           secure: true,
-//           sameSite: "none",
-//           // expires:new Date(Date.now()+900000),
-
-//           maxAge: 12 * 12 * 50 * 50 * 1000,
-//         });
-
-//         return res.json({ msg: "login successfully", isUserLogin: true });
-//       } else {
-//         return res.json({ msg: "wrongpassword", isUserLogin: false });
-//       }
-//     } else {
-//       return res.json({ msg: "wrong email or password", isUserLogin: false });
-//     }
-//   });
-// });
 
 //FORGOT PASSWORD
 app.post("/forgot-password", async (req, res) => {
@@ -236,7 +200,7 @@ app.post("/forgot-password", async (req, res) => {
     const { email } = req.body;
     let user = await usermodel.findOne({ email: email });
     if (!user) {
-      return res.json({ msg: "User Not Found!" });
+      return res.status(404).json({ msg: "User Not Found!" });
     }
 
     let getOtp = await generateOTP();
@@ -249,6 +213,7 @@ app.post("/forgot-password", async (req, res) => {
     if ((sendEmailMsg = 0)) {
       return res.json({ msg: "Internal Server Error!" });
     }
+
 
     let updateUser = await usermodel.findOneAndUpdate(
       { email: email },
@@ -296,65 +261,6 @@ app.post("/verify-otp", async (req, res) => {
     return res.status(500).json({ msg: "Internal Server Error!" });
   }
 });
-
-//UPDATE-USER............................
-
-// app.put('/updateuser', async (req, res) => {
-//   try {
-//     const { email, newPassword } = req.body;
-
-//     // Validate input
-//     if (!email || !newPassword) {
-//       return res.status(400).json({ msg: "Email and new password are required." });
-//     }
-
-//     // Find user by email
-//     let user = await usermodel.findOne({ email });
-
-//     if (!user) {
-//       return res.status(404).json({ msg: "User not found." });
-//     }
-
-//     // Hash the new password
-//     const salt = await bcrypt.genSalt(10);
-//     const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-//     // Update user's password
-//     user.password = hashedPassword;
-
-//     await user.save();
-
-//     return res.json({ msg: "Password updated successfully!" });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ msg: "Internal Server Error!" });
-//   }
-// });
-
-// app.put('/updateuser', async (req, res) => {
-//   try {
-
-//     const {newPassword } = req.body;
-
-//     let user = await usermodel.findOne({ password });
-
-//     if (!user) {
-//       return res.status(400).json({ msg: "Invalid OTP. Please try again." });
-
-//     }
-
-//     user.password = newPassword;
-//     user.otp = '';
-//     await usermodel.findOneAndUpdate({password:password},user);
-
-//     return res.json({ msg: "Password updated successfully!" });
-
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ msg: "Internal Server Error!" });
-//   }
-// });
-
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
 });
