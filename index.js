@@ -67,19 +67,26 @@ const usermodel = mongoose.model("user", userSchema);
 
 // Registeration- api........................
 
-app.post("/register", (req, res) => {
+const saltRounds = 10; // Number of salt rounds for hashing
+
+app.post("/register", async (req, res) => {
   const { username, password, email } = req.body;
 
-  usermodel
-    .create({
-      username,
-      password,
-      email,
-    })
-    .then((user) => res.json(user))
-    .catch((err) => res.json(err));
-});
+  try {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    // Create user with hashed password
+    const user = await usermodel.create({
+      username,
+      password: hashedPassword,
+      email,
+    });
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 // new-appli
 
 app.get("/tk", (req, res) => {
