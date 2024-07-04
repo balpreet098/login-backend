@@ -11,12 +11,11 @@ const bcrypt = require("bcrypt");
 // const Homepage = require('./Homepage.jsx');
 
 
-const frontUrl = process.env.FRONT_END_BASE_URL || "https://login-frontend-alpha.vercel.app";
-console.log(frontUrl)
+const frontUrl = process.env.FRONT_END_BASE_URL || "https://login-frontend-alpha.vercel.app/*";
 
 const coreOptions = {
-  origin:'*',
-  credentials: false,
+  origin:frontUrl,
+  credentials: true,
 };
 
 
@@ -36,7 +35,7 @@ app.use(function (req, res, next) {
 app.use(cors(coreOptions));
 app.use(express.json());
 
-// app.use(mazehiimzaa());
+app.use(mazehiimzaa());
 
 app.use(require("body-parser").urlencoded({ extended: true }));
 
@@ -200,7 +199,7 @@ app.post("/forgot-password", async (req, res) => {
     const { email } = req.body;
     let user = await usermodel.findOne({ email: email });
     if (!user) {
-      return res.status(404).json({ msg: "User Not Found!" });
+      return res.json({ msg: "User Not Found!" });
     }
 
     let getOtp = await generateOTP();
@@ -226,6 +225,8 @@ app.post("/forgot-password", async (req, res) => {
     return res.json({ msg: "Internal Server Error!" });
   }
 });
+
+
 
 //VERIFY-OTP.................................
 
@@ -261,6 +262,10 @@ app.post("/verify-otp", async (req, res) => {
     return res.status(500).json({ msg: "Internal Server Error!" });
   }
 });
+
+
+
+
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
 });
@@ -268,3 +273,10 @@ app.listen(port, () => {
 // app.listen(port, () => {
 //   console.log(`Server is running on port ${port}`);
 // });
+
+
+
+
+
+
+
