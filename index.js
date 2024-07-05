@@ -232,7 +232,7 @@ app.post("/forgot-password", async (req, res) => {
 
 app.post("/verify-otp", async (req, res) => {
   try {
-    const { email, otp, newPassword } = req.body;
+    const { email, otp, newPassword } = req.query;
 
     // Validate input
     if (!email || !otp || !newPassword) {
