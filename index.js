@@ -9,6 +9,7 @@ const bcrypt = require("bcrypt");
 const PORT = process.env.PORT || 4000;
 const saltRounds = 10; // Number of salt rounds for hashing
 let whitelist = [
+  process.env.FRONT_END_BASE_URL || "http://localhost:5174",
   "http://localhost:5174",
   "https://auth-server-tyzy.onrender.com",
   "http://localhost:4000",
@@ -19,7 +20,7 @@ const corsOptions = {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
-    } 
+    }
   },
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
@@ -194,7 +195,9 @@ app.post("/forgot-password", async (req, res) => {
       { otp: getOtp }
     );
     console.log("updateUser", updateUser);
-    return res.status(200).json({ msg: "OTP sended to you email please verify" });
+    return res
+      .status(200)
+      .json({ msg: "OTP sended to you email please verify" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ msg: "Internal Server Error!" });
@@ -204,7 +207,6 @@ app.post("/verify-otp", async (req, res) => {
   try {
     const { email, otp, newPassword } = req.query;
 
-  
     // Validate input
     if (!email || !otp || !newPassword) {
       return res.status(400).json({ msg: "All fields are required." });
@@ -221,7 +223,6 @@ app.post("/verify-otp", async (req, res) => {
     if (user.otp !== otp) {
       return res.status(400).json({ msg: "Invalid OTP. Please try again." });
     }
-
 
     // Hash the new password
     const salt = await bcrypt.genSalt(10);
