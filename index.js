@@ -30,8 +30,7 @@ const app = express();
 app.use(cookieParser());
 app.use(cors(corsOptions));
 if (process.env.NODE_ENV === "production") {
-  app.use((req, res, next) => {
-    app.use(logger("dev"));
+  app.use((req, res, next) => { 
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.header("Access-Control-Allow-Credentials", true);
     res.header(
